@@ -49,7 +49,9 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   //  So you can pass any parameters supported by the search endpoint below.
   //  queryBy is required.
   additionalSearchParameters: {
-    queryBy: "name,description,categories"
+    queryBy: "name,description,categories",
+    groupBy: "categories",
+    groupLimit: 1
     // pinnedHits: "23:2"
   }
 });
@@ -160,6 +162,7 @@ search.addWidgets([
             {{#helpers.highlight}}{ "attribute": "description" }{{/helpers.highlight}}
           </div>
           <div class="hit-price">\${{price}}</div>
+          <div class="hit-rating">Categories: {{categories}}</div>
           <div class="hit-rating">Rating: {{rating}}</div>
           <div class="hit-free-shipping">Free Shipping: {{free_shipping}}</div>
         </div>
