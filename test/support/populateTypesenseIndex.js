@@ -13,7 +13,7 @@ module.exports = (async () => {
         protocol: "http"
       }
     ],
-    apiKey: "xyz"
+    apiKey: process.env.TYPESENSE_API_KEY || "xyz"
   });
 
   const schema = {

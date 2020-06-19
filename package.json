@@ -23,6 +23,9 @@
     "lint": "eslint .",
     "test": "jest --maxWorkers=1 --verbose",
     "build": "babel src -d lib",
+    "rollup-all": "npm run rollup; npm run rollup-dev;",
+    "rollup": "rollup -c",
+    "rollup-dev": "DEVELOPMENT=true rollup -c",
     "typesenseServer": "docker run -i -p 8108:8108 -v/tmp/typesense-server-data-1c/:/data typesense/typesense:0.13.0 --data-dir /data --api-key=xyz --search-only-api-key=abcd --listen-port 8108 --enable-cors",
     "createServerNodesFile": "echo '172.17.0.2:8107:8108,172.17.0.3:7107:7108,172.17.0.4:9107:9108' > `pwd`/typesense-server-nodes",
     "typesenseServer:0": "docker run -i -p 8108:8108 -p 8107:8107 -v/tmp/typesense-server-data-1b/:/data -v`pwd`/typesense-server-nodes:/typesense-server-nodes typesense/typesense:0.13.0 --data-dir /data --api-key=xyz --search-only-api-key=abcd --listen-port 8108 --peering-port 8107 --enable-cors --nodes=/typesense-server-nodes",
@@ -41,10 +44,15 @@
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",
+    "@babel/plugin-transform-modules-umd": "^7.10.1",
     "@babel/plugin-transform-runtime": "^7.10.1",
     "@babel/polyfill": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
+    "@rollup/plugin-babel": "^5.0.3",
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^8.0.1",
     "babel-jest": "^25.5.1",
+    "babel-preset-es2015-rollup": "^3.0.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
@@ -60,7 +68,10 @@
     "jest-junit": "^10.0.0",
     "jest-puppeteer": "^4.4.0",
     "prettier": "1.19.1",
-    "puppeteer": "^2.1.1"
+    "puppeteer": "^2.1.1",
+    "rollup": "^2.17.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-uglify": "^6.0.4"
   },
   "dependencies": {
     "he": "^1.2.0",
