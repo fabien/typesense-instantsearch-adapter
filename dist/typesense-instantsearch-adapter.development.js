@@ -4547,17 +4547,32 @@
     }
 
     _createClass(SearchResponseAdapter, [{
+      key: "_adaptGroupedHits",
+      value: function _adaptGroupedHits(typesenseGroupedHits) {
+        var _this = this;
+
+        var adaptedResult = [];
+        adaptedResult = typesenseGroupedHits.map(function (groupedHit) {
+          return _this._adaptHits(groupedHit.hits);
+        }); // adaptedResult is now in the form of [[{}, {}], [{}, {}], ...]
+        //  where each element in the outer most array corresponds to a group.
+        // We now flatten it to [{}, {}, {}]
+
+        adaptedResult = adaptedResult.flat();
+        return adaptedResult;
+      }
+    }, {
       key: "_adaptHits",
       value: function _adaptHits(typesenseHits) {
-        var _this = this;
+        var _this2 = this;
 
         var adaptedResult = [];
         adaptedResult = typesenseHits.map(function (typesenseHit) {
           var adaptedHit = _objectSpread2({}, typesenseHit.document);
 
           adaptedHit.objectID = typesenseHit.document.id;
-          adaptedHit._snippetResult = _this._adaptHighlightResult(typesenseHit, "snippet");
-          adaptedHit._highlightResult = _this._adaptHighlightResult(typesenseHit, "value");
+          adaptedHit._snippetResult = _this2._adaptHighlightResult(typesenseHit, "snippet");
+          adaptedHit._highlightResult = _this2._adaptHighlightResult(typesenseHit, "value");
           return adaptedHit;
         });
         return adaptedResult;
@@ -4565,7 +4580,7 @@
     }, {
       key: "_adaptHighlightResult",
       value: function _adaptHighlightResult(typesenseHit, snippetOrValue) {
-        var _this2 = this;
+        var _this3 = this;
 
         // Algolia lists all searchable attributes in this key, even if there are no matches
         // So do the same and then override highlights
@@ -4604,7 +4619,7 @@
             result[attribute] = [];
             value.forEach(function (v) {
               result[attribute].push({
-                value: _this2._adaptHighlightTag(he.decode("".concat(v))),
+                value: _this3._adaptHighlightTag(he.decode("".concat(v))),
                 matchLevel: matchLevel,
                 // TODO: Fix MatchLevel for array
                 matchedWords: matchedWords // TODO: Fix MatchedWords for array
@@ -4613,7 +4628,7 @@
             });
           } else {
             // Convert all values to strings
-            result[attribute].value = _this2._adaptHighlightTag(he.decode("".concat(value)));
+            result[attribute].value = _this3._adaptHighlightTag(he.decode("".concat(value)));
           }
         });
         return result;
@@ -4644,11 +4659,11 @@
       key: "adapt",
       value: function adapt() {
         var adaptedResult = {
-          hits: this._adaptHits(this.typesenseResponse.hits),
+          hits: this.typesenseResponse.grouped_hits ? this._adaptGroupedHits(this.typesenseResponse.grouped_hits) : this._adaptHits(this.typesenseResponse.hits),
           nbHits: this.typesenseResponse.found,
           page: this.typesenseResponse.page,
           nbPages: this._adaptNumberOfPages(),
-          hitsPerPage: this.typesenseResponse.hits.length,
+          hitsPerPage: this.typesenseResponse.request_params.per_page,
           facets: this._adaptFacets(this.typesenseResponse.facet_counts || []),
           facets_stats: this._adaptFacetStats(this.typesenseResponse.facet_counts || {}),
           query: this.typesenseResponse.request_params.q,
@@ -4743,20 +4758,27 @@
                         while (1) {
                           switch (_context.prev = _context.next) {
                             case 0:
-                              _context.next = 2;
+                              _context.prev = 0;
+                              _context.next = 3;
                               return _this2._adaptAndPerformTypesenseRequest(instantsearchRequest);
 
-                            case 2:
+                            case 3:
                               typesenseResponse = _context.sent;
                               responseAdapter = new SearchResponseAdapter(typesenseResponse, instantsearchRequest);
                               return _context.abrupt("return", responseAdapter.adapt());
 
-                            case 5:
+                            case 8:
+                              _context.prev = 8;
+                              _context.t0 = _context["catch"](0);
+                              console.error(_context.t0);
+                              throw _context.t0;
+
+                            case 12:
                             case "end":
                               return _context.stop();
                           }
                         }
-                      }, _callee);
+                      }, _callee, null, [[0, 8]]);
                     }));
 
                     return function (_x2) {
@@ -4808,20 +4830,27 @@
                         while (1) {
                           switch (_context3.prev = _context3.next) {
                             case 0:
-                              _context3.next = 2;
+                              _context3.prev = 0;
+                              _context3.next = 3;
                               return _this3._adaptAndPerformTypesenseRequest(instantsearchRequest);
 
-                            case 2:
+                            case 3:
                               typesenseResponse = _context3.sent;
                               responseAdapter = new FacetSearchResponseAdapter(typesenseResponse, instantsearchRequest);
                               return _context3.abrupt("return", responseAdapter.adapt());
 
-                            case 5:
+                            case 8:
+                              _context3.prev = 8;
+                              _context3.t0 = _context3["catch"](0);
+                              console.error(_context3.t0);
+                              throw _context3.t0;
+
+                            case 12:
                             case "end":
                               return _context3.stop();
                           }
                         }
-                      }, _callee3);
+                      }, _callee3, null, [[0, 8]]);
                     }));
 
                     return function (_x4) {
